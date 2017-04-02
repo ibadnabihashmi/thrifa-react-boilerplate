@@ -14,8 +14,18 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var plumber = require('gulp-plumber');
 var server = require('gulp-server-livereload');
+var eslint = require('gulp-eslint');
+var scsslint = require('gulp-scss-lint');
 
-gulp.task('sass', function() {
+function lint() {
+  return gulp.src(['app/**/*.js','!node_modules/**'])
+    .pipe(plumber())
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+}
+
+gulp.task('sass', () => {
   return gulp.src('public/css/main.scss')
     .pipe(plumber())
     .pipe(sass())
@@ -24,7 +34,7 @@ gulp.task('sass', function() {
     .pipe(gulp.dest('public/css'));
 });
 
-gulp.task('react', function() {
+gulp.task('react', () => {
   return browserify({ entries: 'app/main.js', debug: true })
     .transform('babelify', { presets: ['es2015', 'react'] })
     .bundle()
@@ -36,10 +46,11 @@ gulp.task('react', function() {
     .pipe(gulp.dest('public/js'));
 });
 
-gulp.task('watchify', function() {
+gulp.task('watchify', () => {
   var bundler = watchify(browserify({ entries: 'app/main.js', debug: true }, watchify.args));
   bundler.transform('babelify', { presets: ['es2015', 'react'] });
   bundler.on('update', rebundle);
+  bundler.on('update', lint);
   return rebundle();
 
   function rebundle() {
@@ -59,26 +70,36 @@ gulp.task('watchify', function() {
   }
 });
 
-gulp.task('serve', (done) => {
+gulp.task('lint',lint);
+
+gulp.task('serve' ,(done) => {
+
   gulp.src('public')
-      .pipe(server({
-        livereload: {
-          enable: true,
-          filter: function(filePath, cb) {
-            if(/\/public\/js\/bundle.js/.test(filePath)) {
-              cb(true)
-            } else if(/\/public\/css\/main.css/.test(filePath)){
-              cb(true)
-            }
+    .pipe(server({
+      livereload: {
+        enable: true,
+        filter: function(filePath, cb) {
+          if(/\/public\/js\/bundle.js/.test(filePath)) {
+            cb(true)
+          } else if(/\/public\/css\/main.css/.test(filePath)){
+            cb(true)
           }
-        },
-        open: true
-      }));
+        }
+      },
+      open: true
+    }));
 });
 
-gulp.task('watch', function() {
-  gulp.watch('public/css/**/*.scss', ['sass']);
+gulp.task('watch', () => {
+  gulp.watch('public/css/**/*.scss', ['sass','scss-lint']);
+});
+
+gulp.task('scss-lint', function() {
+  return gulp.src('public/css/main.scss')
+    .pipe(scsslint({
+      'config': '.scss-lint.yml',
+    }));
 });
 
 gulp.task('build', ['sass', 'react']);
-gulp.task('default', ['build', 'watch', 'watchify','serve']);
+gulp.task('default', ['build', 'watch', 'watchify', 'lint','scss-lint','serve']);
