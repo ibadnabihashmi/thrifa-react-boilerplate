@@ -4,8 +4,8 @@ import thunk from 'redux-thunk';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
 
-import Home from '../../../app/components/Home';
-import Messages from '../../../app/components/Messages';
+import Home from '../../../app/components/Home/Home';
+import Messages from '../../../app/components/Partials/Messages/Messages';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);

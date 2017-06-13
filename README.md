@@ -1,9 +1,12 @@
-Installation:
--node version 7.8.0.
--install ruby.
--run "gem install scss_lint".
--run "npm install".
--run "gulp" to see it in browser.
+<h3>Installation:</h3>
 
-Running test:
--run "npm test".
+*  node version 7.8.0.
+*  install ruby.
+*  run "gem install scss_lint".
+*  run "npm install".
+*  run "npm run build".
+*  run "npm start".
+
+<h3>Running test:</h3>
+
+*  run "npm test".

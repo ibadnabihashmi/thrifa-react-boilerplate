@@ -1,14 +1,14 @@
 import React from 'react';
 import { IndexRoute, Route } from 'react-router';
 import App from './components/App';
-import Home from './components/Home';
-import Contact from './components/Contact';
+import Home from './components/Home/Home';
+import Contact from './components/Contact/Contact';
 import NotFound from './components/NotFound';
-import Login from './components/Account/Login';
-import Signup from './components/Account/Signup';
-import Profile from './components/Account/Profile';
-import Forgot from './components/Account/Forgot';
-import Reset from './components/Account/Reset';
+import Login from './components/Account/Login/Login';
+import Signup from './components/Account/Signup/Signup';
+import Profile from './components/Account/Profile/Profile';
+import Forgot from './components/Account/Forgot/Forgot';
+import Reset from './components/Account/Reset/Reset';
 
 export default function getRoutes(store) {
   const ensureAuthenticated = (nextState, replace) => {
